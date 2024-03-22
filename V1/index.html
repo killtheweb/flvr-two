@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- <script src="/libraries/p5.min.js"></script>    <title>Document</title> -->
+<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ccapture.js/1.0.0/CCapture.all.min.js"></script>
+
+<script src="./src/CCapture.js"></script>
+<script src="./src/webm-writer-0.2.0.js"></script>
+<script src="./src/download.js"></script>
+<script src="./src/Whammy.js"></script>
+<!-- 
+<script>
+
+    var capturer = new CCapture( {
+        format: 'webm',
+        framerate: 30,
+        verbose: true
+    });
+
+
+</script> -->
+
+
+<link rel="stylesheet" href="style.css">
+<script src="sketch.js"></script>
+
+
+
+</head>
+<body>
+    <p id="dropzone">
+        Drag your file here.
+    </p>
+
+    <p id="resizeButton">
+        resize.
+    </p>
+
+    <div class="block">
+		<div class="part bottom">
+			<div id="output"></div>
+		</div>
+	</div>
+    
+</body>
+</html>
