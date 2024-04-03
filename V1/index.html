@@ -3,25 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- <script src="/libraries/p5.min.js"></script>    <title>Document</title> -->
-<script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ccapture.js/1.0.0/CCapture.all.min.js"></script>
+<script src="/libraries/p5.min.js"></script>    <title>Document</title>
+<!-- <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script> -->
+<script src="https://unpkg.com/h264-mp4-encoder/embuild/dist/h264-mp4-encoder.web.js"></script>
 
-<script src="src/CCapture.js"></script>
-<script src="src/webm-writer-0.2.0.js"></script>
-<script src="src/download.js"></script>
-<script src="src/Whammy.js"></script>
-<!-- 
-<script>
-
-    var capturer = new CCapture( {
-        format: 'webm',
-        framerate: 30,
-        verbose: true
-    });
-
-
-</script> -->
+<script src="https://cdn.jsdelivr.net/npm/p5.capture@1.4.1/dist/p5.capture.umd.min.js"></script>
+<script src="https://unpkg.com/h264-mp4-encoder/embuild/dist/h264-mp4-encoder.web.js"></script>
+<script src="./embuild/dist/h264-mp4-encoder.web.js"></script>
 
 
 <link rel="stylesheet" href="style.css">
@@ -31,6 +19,43 @@
 
 </head>
 <body>
+
+    <script>
+        const canvas = document.getElementsByTagName("cnv")[0];
+        const ctx = canvas.getContext("2d");
+        const drawFrame = (interpolant) => {
+          ctx.fillStyle = "#0000FF";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#FF0000";
+          ctx.fillRect(0, 0, canvas.width * interpolant, canvas.height * interpolant);
+        };
+        const download = (url, filename) => {
+          const anchor = document.createElement("a");
+          anchor.href = url;
+          anchor.download = filename || "download";
+          anchor.click();
+        };
+    
+        HME.createH264MP4Encoder().then(async encoder => {
+          encoder.width = canvas.width;
+          encoder.height = canvas.height;
+          encoder.initialize();
+    
+          const frames = 100;
+          for (let i = 0; i <= frames; ++i) {
+            drawFrame(i / frames);
+            encoder.addFrameRgba(ctx.getImageData(0, 0, canvas.width, canvas.height).data);
+            await new Promise(resolve => window.requestAnimationFrame(resolve));
+          }
+    
+          encoder.finalize();
+          const uint8Array = encoder.FS.readFile(encoder.outputFilename);
+          download(URL.createObjectURL(new Blob([uint8Array], { type: "video/mp4" })))
+          encoder.delete();
+        })
+      </script>
+      <script>
+      </script>
     <p id="dropzone">
         Drag your file here.
     </p>
