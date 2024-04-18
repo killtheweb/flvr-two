@@ -1,4 +1,5 @@
 let img, TILES_X = 100, TILES_Y = 100, BOLDD, CHARS = "FLVRR", string = "imgs/seed1.jpg", laranja, cinza;
+let images = [];
 let dropzone;
 let slid;
 let vid;
@@ -13,6 +14,7 @@ let fontMin;
 let animSpeed;
 
 let startTime;
+
 
 
 const ancho_inicial = 1080;
@@ -47,7 +49,7 @@ function setup() {
 
 
   cnv = createCanvas(ancho_inicial,alto_inicial, WEBGL);
-  frameRate(24);
+  // frameRate(1);
 
   cnv.parent('output');
 
@@ -161,7 +163,7 @@ function draw() {
   // updatePixels();
   // scale(2);
 
-image(pg, -width/2, -height/2, encoder.width, encoder.height);
+ image(pg, -width/2, -height/2, width, height);
 
   grabarFotograma();
 
@@ -187,10 +189,22 @@ function keyPressed() {
 function gotFile(file) {
   if (file.type === 'image') {
     img = loadImage(file.data, () => {
-      resizeCanvas(img.width, img.height)
-
+      originalImageWidth = img.width;
+      originalImageHeight = img.height;
+      resizeCanvas(originalImageWidth, originalImageHeight);
       img.resize(TILES_X, TILES_Y);
- 
+      
+  HME.createH264MP4Encoder().then(enc => {
+    encoder = enc;
+    encoder.outputFilename = (random() + "").replace("0.", "flvr");
+    encoder.width = originalImageWidth;
+    encoder.height = originalImageHeight;
+    encoder.frameRate = 7;
+    encoder.kbps = 50000;
+    encoder.groupOfPictures = 10;
+    encoder.initialize();
+})
+  
     });
   } else if (file.type === 'video') {
     vid = createVideo(file.data, () => {
